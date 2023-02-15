@@ -87,7 +87,7 @@ public:
 // Hauptprogramm
 int main() {
     srand(time(NULL));
-    string spieler[] = {"Alice", "Bob"};
+    string spieler[] = {"Paul", "Justus"};
 
     Spiel* spiel1 = new Wuerfelspiel1();
     spiel1->setSpieler(spieler);
