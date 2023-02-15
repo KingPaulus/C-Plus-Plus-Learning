@@ -3,4 +3,4 @@ project(NewCProjekt)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(NewCProjekt main.cpp)
+add_executable(NewCProjekt main.cpp Exceptions-File/Drucker/ExceptionDrucker.cpp Array_2D.cpp Array_2D.h)
