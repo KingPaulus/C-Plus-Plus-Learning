@@ -7,6 +7,7 @@ using namespace std;
 class Iban {
 public:
     virtual void pruefeIban(string ib) = 0;
+    virtual string getIban() = 0;
 };
 
 
@@ -23,6 +24,9 @@ public:
 };
 class Fidschi : public Iban2 {
 public:
+    Fidschi(string iban){
+        setIban(iban);
+    }
     void pruefeIban(string ib1) override {
         string quartett;
         if (ib1.substr(0, 2) != "FI") {
@@ -48,6 +52,9 @@ public:
 };
 class Caiman : public Iban2 {
 public:
+    Caiman(string iban) {
+        setIban(iban);
+    }
     void pruefeIban(string ib1) override {
         int summe = 0;
         int pruefziffer;
@@ -83,10 +90,10 @@ int main() {
     int max = 20;
     Iban2* iban[max];
     try {
-        Fidschi fidschi1;
+        Fidschi fidschi1("FI3333666636991233");
         fidschi1.pruefeIban("FI3333666636991233");
         cout << fidschi1.getIban() <<endl;
-        Caiman caiman1;
+        Caiman caiman1("FI3333666636991233");;
         caiman1.pruefeIban("CA1234123412341236");
         cout << caiman1.getIban() <<endl;
     }

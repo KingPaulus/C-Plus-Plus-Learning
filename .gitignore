@@ -2,9 +2,4 @@
 .idea
 .DS_Store
 /cmake-build-debug/
-BSP_HausL.exe
-BSP_newOperator.exe
-BSP_Pointer.exe
-BSP_PointerAufKlassen.exe
-UML_Baum.exe
-UmlHerd.exe
+*.exe
