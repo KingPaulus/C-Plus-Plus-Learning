@@ -1,109 +1,171 @@
+// Iban.cpp : Diese Datei enthält die Funktion "main". Hier beginnt und endet die Ausführung des Programms.
+//
+
 #include <iostream>
 #include <string>
-#include <stdexcept>
+#include <vector>
 
 using namespace std;
 
-class Iban {
+class Iban
+{
 public:
-    virtual void pruefeIban(string ib) = 0;
+    virtual void prufeIban(string ib) = 0;
     virtual string getIban() = 0;
+
 };
 
-
 class Iban2 : public Iban {
-protected:
+
+private:
     string iban;
+
 public:
-    void setIban(string ib1) {
-        iban = ib1;
+
+    void setIban(string ib) {
+        iban = ib;
     }
+
     string getIban() {
         return iban;
     }
+
 };
-class Fidschi : public Iban2 {
+
+class Fidschi : public Iban2
+{
 public:
-    Fidschi(string iban){
+    Fidschi(string iban) {
         setIban(iban);
     }
-    void pruefeIban(string ib1) override {
-        string quartett;
-        if (ib1.substr(0, 2) != "FI") {
-            throw "Buchstaben falsch";
+
+    void prufeIban(string ib) {
+        string error = "";
+        if (ib.size() != 18) {
+            error = "Laenge falsch";
+            throw error;
         }
-        if (ib1.length() != 18) {
-            throw "Laenge falsch";
+
+        if (ib.at(0) != 'F' || ib.at(1) != 'I') {
+            error = "Buchstaben falsch";
+            throw error;
         }
-        for (char c : ib1) {
-            if (!isdigit(c) && !isalpha(c)) {
-                throw "falsche Zeichen";
+
+        string ziffern = ib.substr(2);
+
+        for (int i = 0; i < 4; i++) {
+            int block = 0;
+            try {
+                block = stoi(ziffern.substr(i * 4, 4));
             }
-        }
-        for (int i = 2; i < 18; i += 4) {
-            quartett = ib1.substr(i, 4);
-            int zahl = stoi(quartett);
-            if (zahl % 3 != 0) {
-                throw "Zahl nicht durch 3 teilbar";
+            catch (string s) {
+                error = "Falsche Zeichen!";
+                throw error;
             }
+            if (block % 3 != 0) {
+                error = "Block " + to_string(i) + " ist nicht durch 3 teilbar!";
+                throw error;
+            }
+
         }
-        setIban(ib1);
     }
+
 };
-class Caiman : public Iban2 {
+
+class Caiman : public Iban2
+{
 public:
     Caiman(string iban) {
         setIban(iban);
     }
-    void pruefeIban(string ib1) override {
+
+    void prufeIban(string ib) {
+        string error = "";
+        if (ib.size() != 18) {
+            error = "Laenge falsch";
+            throw error;
+        }
+
+        if (ib.at(0) != 'C' || ib.at(1) != 'A') {
+            error = "Buchstaben falsch";
+            throw error;
+        }
+
+        int sum = 0;
+        ib = ib.substr(2);
+        for (int i = 0; i < 5; i++) {
+            int block = 0;
+            try {
+                int block = stoi(ib.substr(i * 3, 3));
+                sum += berechneQuersumme(block);
+            }
+            catch (string s) {
+                error = "Falsche Zeichen!";
+                throw error;
+            }
+
+        }
+        int pruf = ib.at(ib.size() - 1) - '0';
+
+
+        if (sum % 10 != pruf) {
+            error = "Pruefziffer falsch";
+            throw error;
+        }
+    }
+
+private:
+    int berechneQuersumme(int zahl) {
         int summe = 0;
-        int pruefziffer;
-        if (ib1.substr(0, 2) != "CA") {
-            throw "Buchstaben falsch";
+        while (0 != zahl) {
+            summe = summe + (zahl % 10);
+            zahl = zahl / 10;
         }
-        if (ib1.length() != 18) {
-            throw "Laenge falsch";
-        }
-        for (char c : ib1) {
-            if (!isdigit(c) && !isalpha(c)) {
-                throw "falsche Zeichen";
-            }
-        }
-        for (int i = 2; i < 17; i++) {
-            char c = ib1[i];
-            int zahl;
-            if (isdigit(c)) {
-                zahl = c - '0';
-            } else {
-                throw "Falsche Iban";
-            }
-            summe += zahl;
-        }
-        pruefziffer = summe % 10;
-        if (pruefziffer != ib1[17] - '0') {
-            throw "Pruefziffer falsch";
-        }
-        setIban(ib1);
+        return summe;
     }
+
 };
-int main() {
-    int max = 20;
-    Iban2* iban[max];
-    try {
-        Fidschi fidschi1("FI3333666636991233");
-        fidschi1.pruefeIban("FI3333666636991233");
-        cout << fidschi1.getIban() <<endl;
-        Caiman caiman1("FI3333666636991233");;
-        caiman1.pruefeIban("CA1234123412341236");
-        cout << caiman1.getIban() <<endl;
+
+
+int main()
+{
+    vector<Iban*> ib;
+
+
+    ib.push_back(new Fidschi("FI3333666636991233"));
+    ib.push_back(new Fidschi("FI45819C7081217632"));
+    ib.push_back(new Fidschi("FI5055485208017410"));
+    ib.push_back(new Fidschi("FI1151999033064875"));
+    ib.push_back(new Fidschi("FB1824398145723681"));
+    ib.push_back(new Fidschi("FI8544981939999"));
+
+    ib.push_back(new Caiman("CR1234123412341236"));
+    ib.push_back(new Caiman("CA68225H1387436589"));
+    ib.push_back(new Caiman("CA1357695428952387"));
+    ib.push_back(new Caiman("CA11111111111115"));
+    ib.push_back(new Caiman("CA3842658726914588"));
+    ib.push_back(new Caiman("CA5894369821684597"));
+
+    for (Iban* i : ib) {
+        try {
+
+            i->prufeIban(i->getIban());
+            cout << "Iban " << i->getIban() << " passed!" << endl;
+        }
+        catch (string e) {
+            cout << "Iban: " << i->getIban() << " failed!" << endl;
+            cout << e << endl;
+        }
     }
-    catch (const char* msg){
-        cout << msg;
-    }
-    catch (...)
-    {
-        cout << "Ausnahmefehler!!";
-        exit(1);
-    }
-    return 0;
 }
+
+// Programm ausführen: STRG+F5 oder Menüeintrag "Debuggen" > "Starten ohne Debuggen starten"
+// Programm debuggen: F5 oder "Debuggen" > Menü "Debuggen starten"
+
+// Tipps für den Einstieg: 
+//   1. Verwenden Sie das Projektmappen-Explorer-Fenster zum Hinzufügen/Verwalten von Dateien.
+//   2. Verwenden Sie das Team Explorer-Fenster zum Herstellen einer Verbindung mit der Quellcodeverwaltung.
+//   3. Verwenden Sie das Ausgabefenster, um die Buildausgabe und andere Nachrichten anzuzeigen.
+//   4. Verwenden Sie das Fenster "Fehlerliste", um Fehler anzuzeigen.
+//   5. Wechseln Sie zu "Projekt" > "Neues Element hinzufügen", um neue Codedateien zu erstellen, bzw. zu "Projekt" > "Vorhandenes Element hinzufügen", um dem Projekt vorhandene Codedateien hinzuzufügen.
+//   6. Um dieses Projekt später erneut zu öffnen, wechseln Sie zu "Datei" > "Öffnen" > "Projekt", und wählen Sie die SLN-Datei aus.
