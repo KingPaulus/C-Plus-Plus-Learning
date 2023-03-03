@@ -1,4 +1,6 @@
 # Project exclude paths
+.idea
+.DS_Store
 /cmake-build-debug/
 BSP_HausL.exe
 BSP_newOperator.exe
