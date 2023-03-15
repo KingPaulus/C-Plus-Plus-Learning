@@ -9,6 +9,7 @@ class Iban {
 public:
     virtual void pruefeIban(string ib) = 0;
     virtual string getIb() = 0;
+    virtual void printIb() = 0;
 };
 
 class Iban2 : public Iban {
@@ -24,6 +25,9 @@ public:
     string getIb() {
         return ib;
     }
+    void printIb() {
+        cout << "Iban: " << ib << endl;
+    }
 };
 
 class Fidschi : public Iban2 {
@@ -33,16 +37,24 @@ public:
         int i, k, wert;
         string meldung;
 
+        // Prüfen der Länge
+        // darf nicht länger als 18 sein
         if (ib1.length() != 18) {
             meldung = "Falsche Laenge";
             throw (meldung);
         }
+
+        // Prüfen der Ziffern
+        // darf nur Ziffern enthalten, keine Buchstaben
         for (i = 2; i < 18; i++) {
             if (ib1[i] < '0' || ib1[i] > '9') {
-                throw ("Ziffernfehler");
+                meldung = "Ziffernfehler";
+                throw (meldung);
             }
         }
 
+        // Prüfen der ersten beiden Buchstaben
+        // müssen "FI" sein
         if (ib1[0] != 'F' || ib1[1] != 'I') {
             meldung = "Falsche Buchstaben";
             throw (meldung);
@@ -58,6 +70,8 @@ public:
                 throw (meldung);
             }
         }
+
+        // Setze Iban
         setIb(ib1);
     }
 
@@ -74,10 +88,15 @@ public:
         int i, k, wert;
         string meldung;
 
+        // Prüfen der Länge
+        // darf nicht länger als 18 sein
         if (ib1.length() != 18) {
             meldung = "Falsche Laenge";
             throw (meldung);
         }
+
+        // Prüfen der Ziffern
+        // darf nur Ziffern enthalten, keine Buchstaben
         for (i = 2; i < 18; i++) {
             if (ib1[i] < '0' || ib1[i] > '9') {
                 meldung = "Ziffernfehler";
@@ -86,10 +105,15 @@ public:
             }
         }
 
+        // Prüfen der ersten beiden Buchstaben
+        // müssen "CI" sein
         if (ib1[0] != 'C' || ib1[1] != 'A') {
             meldung = "Falsche Buchstaben";
             throw (meldung);
         }
+
+        // Prüfen der Prüfziffer
+        // Prüfziffer muss stimmen
         wert = 0;
         for (i = 2; i < 17; i++) {
             wert = wert + ib1[i] - '0';
@@ -98,6 +122,8 @@ public:
             meldung = "Falsche Pruefziffer";
             throw (meldung);
         }
+
+        // Setze Iban
         setIb(ib1);
     }
 
@@ -113,18 +139,23 @@ int main() {
 
     al[0] = new Fidschi();;
     al[1] = new Caiman();
-    //       al[0]->setIb("hh");                      // Warum funktioniert dies nicht?
 
     try {
         al[0]->pruefeIban("FI3363123644432223");
         al[1]->pruefeIban("CA1234123412341236");
-        cout << al[0]->getIb() << endl;
-        cout << al[1]->getIb() << endl;
-    } catch (string e) {
-        cout << e << endl;
+        al[0]->printIb();
+        al[1]->printIb();
+
     }
+
+    // Fange Fehler String ab
+    catch (string e) {
+        cerr << e << endl;
+    }
+
+    // Fange sämtliche Fehler ab
     catch(...) {
-        cout << "unknown error" << endl;
+        cerr << "unknown error" << endl;
     }
 }
 
