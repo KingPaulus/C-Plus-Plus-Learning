@@ -43,8 +43,8 @@ public:
         }
     }
     void setRing (string ring1) {
-        if(size(ring1) == 10) {
-            for (int i = 0; i < size(ring1); i++) {
+        if(ring1.size() == 10) {
+            for (int i = 0; i < ring1.size(); i++) {
 
                 // Prüfe nach Buchstaben von A-M
                 if (ring1[i] == 'A' || ring1[i] == 'B' || ring1[i] == 'C' || ring1[i] == 'D' || ring1[i] == 'E' ||
@@ -83,7 +83,7 @@ public:
         cout << "Standvogel: " << name << " " << ring << " " << nestort << endl;
     }
     void setRing (string ring1) {
-        if(size(ring1) == 10) {
+        if(ring1.size() == 10) {
             if(ring1[0] != 'S') {
                 string meldung = "Erster Buchstabe falsch";
                 throw (meldung);
